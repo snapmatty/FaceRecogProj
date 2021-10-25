@@ -21,5 +21,5 @@ for (x, y, w, h) in face:
     cv2.rectangle(img1, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
 # output the detected face in loaded image
-cv2.imshow("Final_image", cv2.COLOR_BGR2RGB(img1))
+cv2.imshow("Final_image.jpg", cv2.COLOR_BGR2RGB(img1))
 cv2.waitKey(0)
