@@ -10,7 +10,7 @@ import random
 
 
 cv_img = []
-for img in glob.glob("dataset/*.jpg"):
+for img in glob.glob("dataset/train/*.jpg"):
     n = cv2.imread(img)
     cv_img.append(n)
 
@@ -33,12 +33,12 @@ generating_data = ImageDataGenerator(
 
 i = 0
 for batch in generating_data.flow_from_directory(
-        directory='dataset/',
-        color_mode='rgb',
-        batch_size=50,
+        directory="dataset/train/JD",
+        color_mode='grayscale',
+        batch_size=2,
         shuffle=True,
-        target_size=(256, 256),
-        save_to_dir='testofimages',
+        target_size=(128, 128),
+        save_to_dir='dataset/aug/JohnnyDeppTrain',
         save_prefix='aug',
         save_format='jpg'):
     i += 1
