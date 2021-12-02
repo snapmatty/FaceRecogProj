@@ -17,8 +17,17 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 
 ## Specifying path to database of train and test.
 
-imagePath1 = 'dataset/aug/test/'
+imagePath1 = 'dataset/aug/test'
 imagePath2 = 'dataset/aug/train/'
+
+
+train_images = np.array([example["image"].numpy()[:,:,0] for example in imagePath1])
+train_labels = np.array([example["label"].numpy() for example in imagePath1])
+
+test_images = np.array([example['image'].numpy()[:,:,0] for example in imagePath2])
+test_labels = np.array([example['label'].numpy() for example in imagePath2])
+
+train_images.shape
 
 ## Image Processing
 train_gen = tf.keras.preprocessing.image.ImageDataGenerator(
@@ -34,7 +43,7 @@ traindataset = train_gen.flow_from_directory(
                 directory= imagePath1,
                 color_mode='grayscale',
                 class_mode='categorical',
-                batch_size=8,
+                batch_size=32,
                 shuffle=True
 
 )
@@ -43,7 +52,7 @@ testdataset = test_gen.flow_from_directory(
                 directory= imagePath2,
                 color_mode='grayscale',
                 class_mode='categorical',
-                batch_size=8,
+                batch_size=32,
                 shuffle=True
 )
 
