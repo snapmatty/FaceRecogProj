@@ -1,2 +1,3 @@
 # FaceRecogProj
-This Repository is a commitment towards achieving the final project for Engineering Thesis made my M.D. 2021.
+This Repository is a commitment towards achieving the Face Recognition program (data regression approach).
+Multiple input data is sorted, labeled, input into model which trains and is able to distinguish if the people on the images are the same person or not.
