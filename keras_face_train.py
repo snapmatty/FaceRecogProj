@@ -62,7 +62,8 @@ dataY = asarray(testdataset)
 
 
 ## Concatonating the data
-np.concatenate([dataX, dataY])
+## dynamiczna generacja obrazków i następnie wrzucenie ich do łączenia
+np.concatenate((dataX), axis = None)
 
 
 model = tf.keras.models.Sequential([tf.keras.layers.Conv2D(16, (3, 3), activation='relu', input_shape=(128, 64, 1)),
