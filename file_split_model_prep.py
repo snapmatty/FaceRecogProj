@@ -35,7 +35,8 @@ def create_csv_files(source_dir, filename_trainVal, filename_test):
 
     listOfFiles = getListOfFiles(source_dir)
 
-    list_of_test = random.sample(listOfFiles, 10)
+    #list_of_valid = random.sample(listOfFiles, 10)
+    list_of_test = random.sample(listOfFiles, 12)
     list_of_train = [file for file in listOfFiles if not file in list_of_test]
     # list_of_train, list_of_test = train_test_split(listOfFiles, test_size=0.3, random_state=111)
 
@@ -59,12 +60,10 @@ def create_csv_files(source_dir, filename_trainVal, filename_test):
             for pic2 in list_of_test:
                 val = bool(pic1.rsplit('\\', -1)[1] == pic2.rsplit('\\', -1)[1])
                 list_of_pairs_with_vals.append((pic1, pic2, val))
-
-        # Warto podkreślić, ze na ogół usuwa się pary b == a, jeśli już istnieje para a == b. W przypadku tej sieci
-        # ze względu na fakt, że próbki te będą wyglądać inaczej operacja ta nie ma sensu
-
        write.writerows(list_of_pairs_with_vals)
     return
+
+
 
 #reading from the CSV file
 def read_from_csv(filename):
@@ -83,15 +82,18 @@ def read_from_csv(filename):
 source = 'dataset\\'
 csv_file_train = 'pairs_with_value_train.csv'
 csv_file_test = 'pairs_with_value_test.csv'
+#csv_file_valid = 'pair_with_value_valid.csv'
 
 create_csv_files(source, csv_file_train, csv_file_test)
 
 list_of_pairs_with_vals_test = read_from_csv(csv_file_test)
-
 list_of_pairs_with_vals_train_val = read_from_csv(csv_file_train)
+
 random.shuffle(list_of_pairs_with_vals_train_val)
+
 list_of_pairs_with_vals_train = list_of_pairs_with_vals_train_val[:int(0.8 * len(list_of_pairs_with_vals_train_val))]
 list_of_pairs_with_vals_val   = list_of_pairs_with_vals_train_val[int(0.8 * len(list_of_pairs_with_vals_train_val)):]
+#the operations above just create the split into 90 and 10% batches of Valid and Train, can also be done once more to split into one more batch of testing batch
 del list_of_pairs_with_vals_train_val  #releasing the memory
 
 
