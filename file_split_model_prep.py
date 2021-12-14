@@ -3,6 +3,15 @@ import os
 import csv
 ## Image aug + model libs
 # import tensorflow as tf
+import warnings
+from keras.optimizer_v1 import adam
+import numpy as np
+from numpy import asarray
+import tensorflow as tf
+from keras.layers import BatchNormalization
+from keras.layers import Dropout
+from keras.losses import mean_squared_error
+from keras.metrics import accuracy
 
 ## Graphical libs
 import matplotlib.pyplot as plt
@@ -31,12 +40,12 @@ def getListOfFiles(dirName):
 
 # Create CSV files with pairs (if pair is from the same directory they are set as TRUE (1) if not FALSE (0) 1/0 approach
 def create_csv_files(source_dir, filename_trainVal, filename_test):
-    print('Pair creation from', source_dir)
+    print('Creating pairs from:', source_dir)
 
     listOfFiles = getListOfFiles(source_dir)
 
     #list_of_valid = random.sample(listOfFiles, 10)
-    list_of_test = random.sample(listOfFiles, 12)
+    list_of_test = random.sample(listOfFiles, 10)
     list_of_train = [file for file in listOfFiles if not file in list_of_test]
     # list_of_train, list_of_test = train_test_split(listOfFiles, test_size=0.3, random_state=111)
 
@@ -46,11 +55,14 @@ def create_csv_files(source_dir, filename_trainVal, filename_test):
        # print(list_of_train)
        list_of_pairs_with_vals = []
 
+
        for pic1 in list_of_train:
            for pic2 in list_of_train:
-               val = bool(pic1.rsplit('\\', -1)[1] == pic2.rsplit('\\', -1)[1]) ##splitting so that we only get the acutal name of the actor from the 'dataset / ACTORNAME / IMG' path
-               list_of_pairs_with_vals.append((pic1, pic2, val)) ## appending the two images obtained and their value to the created list
-       write.writerows(list_of_pairs_with_vals) ## they are written into a row
+                        if pic1 == pic2:
+                            continue
+                        val = bool(pic1.rsplit('\\', -1)[1] == pic2.rsplit('\\', -1)[1]) ##splitting so that we only get the acutal name of the actor from the 'dataset / ACTORNAME / IMG' path
+                        list_of_pairs_with_vals.append((pic1, pic2, val)) ## appending the two images obtained and their value to the created list
+       write.writerows(list_of_pairs_with_vals)  ## they are written into a row
 
 ## the same procedure as above is going to happen for the TEST samples
     with open(filename_test, 'w', newline='') as f:
@@ -99,9 +111,53 @@ del list_of_pairs_with_vals_train_val  #releasing the memory
 
 print(list_of_pairs_with_vals_val)
 
-
 #  Model Prep
 
 
+
+
+# Model Train
+model = tf.keras.models.Sequential([tf.keras.layers.Conv2D(16, (3, 3), activation='relu', input_shape=(128, 64, 1)),
+                                    tf.keras.layers.MaxPool2D(2, 2),
+                                    BatchNormalization(2),
+
+                                    #
+                                    tf.keras.layers.Conv2D(32, (3, 3), activation='relu'),
+                                    tf.keras.layers.MaxPool2D(2, 2),
+                                    Dropout(0.2),
+                                    #
+                                    tf.keras.layers.Conv2D(64, (3, 3), activation='relu'),
+                                    tf.keras.layers.MaxPool2D(2, 2),
+                                    BatchNormalization(2),
+                                    #
+                                    tf.keras.layers.Flatten(),
+                                    #
+                                    tf.keras.layers.Dense(1, activation = 'sigmoid')
+                                    ])
+model.summary()
+
+
+
+
+print('Model is being built!')
+model.compile(loss= mean_squared_error,
+              optimizer = adam,
+              metrics=[accuracy]
+              )
+
+
+model_fit = model.fit(list_of_pairs_with_vals_train,
+                      epochs = 20,
+                      callbacks = [
+                          tf.keras.callbacks.EarlyStopping(
+                              monitor = 'val_loss',
+                              patience = 5,
+                              restore_best_weights = True
+                          )
+
+                      ]
+                   )
+
+model.save('dataset/')
 
 
