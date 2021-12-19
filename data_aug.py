@@ -10,7 +10,7 @@ import random
 
 
 cv_img = []
-for img in glob.glob("dataset/train/*.jpg"):
+for img in glob.glob("dataset/example/*.jpg"):
     n = cv2.imread(img)
     cv_img.append(n)
 
@@ -38,7 +38,7 @@ for batch in generating_data.flow_from_directory(
         batch_size=2,
         shuffle=True,
         target_size=(128, 128),
-        save_to_dir='dataset/aug/JohnnyDeppTrain',
+        save_to_dir='dataset/example/result/',
         save_prefix='aug',
         save_format='jpg'):
     i += 1

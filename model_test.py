@@ -45,7 +45,7 @@ def create_csv_files(source_dir, filename_trainVal, filename_test):
     listOfFiles = getListOfFiles(source_dir)
 
     #list_of_valid = random.sample(listOfFiles, 10)
-    list_of_test = random.sample(listOfFiles, 15)
+    list_of_test = random.sample(listOfFiles, 10)
     list_of_train = [file for file in listOfFiles if not file in list_of_test]
     # list_of_train, list_of_test = train_test_split(listOfFiles, test_size=0.3, random_state=111)
 
@@ -70,8 +70,6 @@ def create_csv_files(source_dir, filename_trainVal, filename_test):
        list_of_pairs_with_vals = []
        for pic1 in list_of_test:
             for pic2 in list_of_test:
-                if pic1 == pic2:
-                    continue
                 val = bool(pic1.rsplit('\\', -1)[1] == pic2.rsplit('\\', -1)[1])
                 list_of_pairs_with_vals.append((pic1, pic2, val))
        write.writerows(list_of_pairs_with_vals)
@@ -118,19 +116,16 @@ random.shuffle(list_of_pairs_with_vals_train_val)
 
 list_of_pairs_with_vals_train = list_of_pairs_with_vals_train_val[:int(0.8 * len(list_of_pairs_with_vals_train_val))]
 list_of_pairs_with_vals_val   = list_of_pairs_with_vals_train_val[int(0.8 * len(list_of_pairs_with_vals_train_val)):]
-
-print(type(list_of_pairs_with_vals_train))
 #the operations above just create the split into 90 and 10% batches of Valid and Train, can also be done once more to split into one more batch of testing batch
 del list_of_pairs_with_vals_train_val  #releasing the memory
 
 
 print(list_of_pairs_with_vals_val)
 
-#data_augmentation_function(list_of_pairs_with_vals_train[::1], label = list_of_pairs_with_vals_train[:1])
+data_augmentation_function(list_of_pairs_with_vals_train[::1], label = list_of_pairs_with_vals_train[:1])
 
 
 #  Model Prep
-
 
 
 
