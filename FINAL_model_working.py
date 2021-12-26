@@ -106,7 +106,7 @@ def normalizeImage(img):
 
 
 #  Data Preparation
-source = '/content/dataset'
+source = 'dataset/'
 
 listOfCombinedImages = generateAugumentedImagePairs(source)
 
@@ -167,4 +167,31 @@ model_fit = model.fit(x,
                       y,
                       epochs=20)
 
-model.save('dataset/')
+model.save('dataset/mymodel')
+
+## Checking model accuracy
+x1 = []
+for item in list_of_pairs_with_vals_test:
+  image = item[0]
+  x1.append(image)
+x1 = np.stack(x1, 0)
+x1 = x1.reshape(x1.shape[0], x1.shape[1], x1.shape[2], 1)
+print(x1.shape)
+
+# get the target training data (is matched or not)
+y1 = []
+for item in list_of_pairs_with_vals_test:
+  result = item[1]
+  y1.append(result)
+y1 = np.array(y1)
+
+
+print("Evaluate on test data")
+results = model.evaluate(x1, y1, batch_size=128)
+print("test loss, test acc:", results)
+
+# Generate predictions (probabilities -- the output of the last layer)
+# on new data using `predict`
+print("Generate predictions for 3 samples")
+predictions = model.predict(x1[:3])
+print("predictions shape:", predictions.shape)
